@@ -1,7 +1,7 @@
 {% set version = "0.2.20" %}
 
 package:
-  name: openblas
+  name: openblas_multipkg
   version: {{ version }}
 
 source:
@@ -25,16 +25,65 @@ requirements:
     # until this is fixed add libgcc explicitly
     - libgcc-ng
 
+outputs:
+
+  - name: libopenblas
+    files:
+      - lib/*.so
+      - lib/libopenblas.so.0
+    about:
+      home: http://www.openblas.net/
+      license: BSD
+      license_file: LICENSE
+      summary: An Optimized BLAS library
+      description: |
+        OpenBLAS is based on GotoBLAS2 1.13 BSD version.
+      doc_url: http://www.openblas.net/
+      doc_source_url: https://github.com/xianyi/OpenBLAS/blob/develop/README.md
+      dev_url: https://github.com/xianyi/OpenBLAS
+
+  - name: libopenblas-static
+    files:
+      - lib/*.a
+    about:
+      summary: OpenBLAS static libraries.
+
+  - name: openblas-devel
+    files:
+      - include
+      - lib/pkgconfig
+      - lib/cmake
+      - site.cfg
+    run_exports:
+      - {{ pin_subpackage('libopenblas', max_pin='x.x.x') }}
+    requirements:
+      run:
+        - {{ pin_subpackage('libopenblas', max_pin='x.x.x') }}
+    about:
+      summary: OpenBLAS headers and libraries for developing software that used OpenBLAS.
+
+  # openblas meta-package. It is better to require openblas-devel or libopenblas
+  - name: openblas
+    requirements:
+      run:
+        - {{ pin_subpackage('openblas', max_pin='x.x.x') }}
+        - {{ pin_subpackage('openblas-devel', max_pin='x.x.x') }}
+    about:
+      home: http://www.openblas.net/
+      license: BSD
+      license_file: LICENSE
+      summary: An Optimized BLAS library
+      description: |
+        OpenBLAS is based on GotoBLAS2 1.13 BSD version.
+      doc_url: http://www.openblas.net/
+      doc_source_url: https://github.com/xianyi/OpenBLAS/blob/develop/README.md
+      dev_url: https://github.com/xianyi/OpenBLAS
+
 test:
   commands:
     - test -f ${PREFIX}/lib/libopenblas.a                            # [unix]
     - python -c "import ctypes; ctypes.cdll['${PREFIX}/lib/libopenblas${SHLIB_EXT}']"  # [unix]
     - if not exist %PREFIX%\\Library\\lib\\libopenblas.lib exit 1    # [win]
-
-about:
-  home: http://www.openblas.net/
-  license: BSD 3-Clause
-  summary: An optimized BLAS library based on GotoBLAS2 1.13 BSD version.
 
 extra:
   recipe-maintainers:
