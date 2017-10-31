@@ -21,26 +21,16 @@ source:
 
 build:
   number: 7
-  skip: true  # [win32]
-  features:
-    - vc14    # [win]
-  msvc_compiler: 14.0
+  run_exports:
+    - {{ pin_subpackage('openblas', max_pin='x.x.x') }}
 
 requirements:
   build:
-    - toolchain
-    - perl 5.22.2.1
-    - gcc              # [unix]
-    - vc 14            # [win]
-    - flang            # [win]
-    - cmake            # [win]
-    - curl             # [win]
-    - jom              # [win]
-
-  run:
-    - vc 14            # [win]
-    - libflang         # [win]
-    - libgfortran      # [unix]
+    - {{ compiler('c') }}
+    - {{ compiler('fortran') }}
+    # libgcc-ng should be a dependecy of libgfortran
+    # until this is fixed add libgcc explicitly
+    - libgcc-ng
 
 test:
   commands:
