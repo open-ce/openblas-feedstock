@@ -36,3 +36,7 @@ if [[ `uname` == 'Darwin' ]]; then
     install_name_tool -id ${PREFIX}/lib/libopenblas.dylib ${PREFIX}/lib/libopenblas.dylib;
 fi
 
+cp $RECIPE_DIR/site.cfg $PREFIX/site.cfg
+echo library_dirs = $PREFIX/lib  >> $PREFIX/site.cfg
+echo include_dirs = $PREFIX/include  >> $PREFIX/site.cfg
+echo runtime_include_dirs = $PREFIX/lib  >> $PREFIX/site.cfg
