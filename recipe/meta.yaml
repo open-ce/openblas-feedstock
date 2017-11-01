@@ -23,14 +23,15 @@ requirements:
     - {{ compiler('fortran') }}
     # libgcc-ng should be a dependecy of libgfortran
     # until this is fixed add libgcc explicitly
-    - libgcc-ng
+    - libgcc-ng  # [linux]
 
 outputs:
 
   - name: libopenblas
     files:
-      - lib/*.so
-      - lib/libopenblas.so.0
+      - lib/*.so               # [linux]
+      - lib/libopenblas.so.0   # [linux]
+      - lib/*.dylib            # [osx]
     about:
       home: http://www.openblas.net/
       license: BSD
