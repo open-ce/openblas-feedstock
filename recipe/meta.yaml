@@ -39,6 +39,13 @@ outputs:
       - lib/*.so               # [linux]
       - lib/libopenblas.so.0   # [linux]
       - lib/*.dylib            # [osx]
+    requirements:
+      build:
+        - {{ compiler('c') }}
+        - {{ compiler('fortran') }}
+        # libgcc-ng should be a dependecy of libgfortran
+        # until this is fixed add libgcc explicitly
+        - libgcc-ng  # [linux]
     about:
       home: http://www.openblas.net/
       license: BSD
