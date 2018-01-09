@@ -28,9 +28,14 @@ outputs:
 
   - name: libopenblas
     files:
-      - lib/*.so               # [linux]
-      - lib/libopenblas.so.0   # [linux]
-      - lib/*.dylib            # [osx]
+      - lib/libblas.so          # [linux]
+      - lib/libblas.dylib       # [osx]
+      - lib/libcblas.so         # [linux]
+      - lib/libcblas.dylib      # [osx]
+      - lib/liblapack.so        # [linux]
+      - lib/liblapack.dylib     # [osx]
+      - lib/libopenblas*.so*    # [linux]
+      - lib/libopenblas*.dylib  # [osx]
     requirements:
       build:
         - {{ compiler('c') }}
@@ -51,15 +56,24 @@ outputs:
 
   - name: libopenblas-static
     files:
-      - lib/*.a
+      - lib/libblas.a
+      - lib/libcblas.a
+      - lib/liblapack.a
+      - lib/libopenblas*.a
     about:
       summary: OpenBLAS static libraries.
 
   - name: openblas-devel
     files:
-      - include
-      - lib/pkgconfig
-      - lib/cmake
+      - include/cblas.h
+      - include/f77blas.h
+      - include/lapacke*.h
+      - include/openblas_config.h
+      - lib/cmake/openblas
+      - lib/pkgconfig/blas.pc
+      - lib/pkgconfig/cblas.pc
+      - lib/pkgconfig/lapack.pc
+      - lib/pkgconfig/openblas.pc
       - site.cfg
     run_exports:
       - {{ pin_subpackage('libopenblas', max_pin='x.x.x') }}
@@ -73,7 +87,7 @@ outputs:
   - name: openblas
     requirements:
       run:
-        - {{ pin_subpackage('openblas', max_pin='x.x.x') }}
+        - {{ pin_subpackage('libopenblas', max_pin='x.x.x') }}
         - {{ pin_subpackage('openblas-devel', max_pin='x.x.x') }}
     about:
       home: http://www.openblas.net/
