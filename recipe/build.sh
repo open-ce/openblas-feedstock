@@ -10,7 +10,7 @@ if [[ `uname` == 'Darwin' ]]; then
 else
      export LIBRARY_SEARCH_VAR=LD_LIBRARY_PATH
 fi
-eval export ${LIBRARY_SEARCH_VAR}="${PREFIX}/lib"
+eval export ${LIBRARY_SEARCH_VAR}="${BUILD_PREFIX}/lib"
 
 # Build all CPU targets and allow dynamic configuration
 # Build LAPACK.
