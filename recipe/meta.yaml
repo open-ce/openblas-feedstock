@@ -23,6 +23,7 @@ requirements:
     - cmake                      # [win]
     - curl                       # [win]
     - jom                        # [win]
+    - make       # [unix]
 
 outputs:
 
