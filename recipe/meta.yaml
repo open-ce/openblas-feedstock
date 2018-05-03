@@ -31,6 +31,7 @@ requirements:
     # libgcc-ng should be a dependecy of libgfortran
     # until this is fixed add libgcc explicitly
     - libgcc-ng  # [linux]
+    - make       # [unix]
 
 outputs:
 
