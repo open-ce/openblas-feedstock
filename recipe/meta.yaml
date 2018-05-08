@@ -24,6 +24,8 @@ requirements:
     - curl                       # [win]
     - jom                        # [win]
     - make       # [unix]
+    - jom        # [win]
+    - cmake      # [win]
 
 outputs:
 
@@ -107,7 +109,7 @@ outputs:
   - name: blas
     version: 1.0
     build:
-      string: mkl
+      string: openblas
 
 test:
   commands:
