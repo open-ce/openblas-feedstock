@@ -15,7 +15,7 @@ source:
     - gh_1264.patch
     - gh_1279.patch
     - gh_1323.patch
-    - gh_1350.patch
+    - gh_1350.patch  # this one is failing to apply on win right now.
     - gh_1377.patch
     - gh_1417.patch
 
@@ -30,6 +30,8 @@ requirements:
     # until this is fixed add libgcc explicitly
     - libgcc-ng  # [linux]
     - make       # [unix]
+    - jom        # [win]
+    - cmake      # [win]
 
 outputs:
 
@@ -113,7 +115,7 @@ outputs:
   - name: blas
     version: 1.0
     build:
-      string: mkl
+      string: openblas
 
 test:
   commands:
