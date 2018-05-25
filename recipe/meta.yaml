@@ -52,6 +52,12 @@ outputs:
         # libgcc-ng should be a dependecy of libgfortran
         # until this is fixed add libgcc explicitly
         - libgcc-ng  # [linux]
+    test:
+      requires:
+        - python      # [unix]
+      commands:
+        - python -c "import ctypes; ctypes.cdll['${PREFIX}/lib/libopenblas${SHLIB_EXT}']"  # [unix]
+        - if not exist %PREFIX%\\Library\\lib\\openblas.lib exit 1    # [win]
     about:
       home: http://www.openblas.net/
       license: BSD
@@ -69,6 +75,9 @@ outputs:
       - lib/libcblas.a
       - lib/liblapack.a
       - lib/libopenblas*.a
+    test:
+      commands:
+        - test -f ${PREFIX}/lib/libopenblas.a                            # [unix]
     about:
       summary: OpenBLAS static libraries.
 
@@ -117,11 +126,19 @@ outputs:
     build:
       string: openblas
 
-test:
-  commands:
-    - test -f ${PREFIX}/lib/libopenblas.a                            # [unix]
-    - python -c "import ctypes; ctypes.cdll['${PREFIX}/lib/libopenblas${SHLIB_EXT}']"  # [unix]
-    - if not exist %PREFIX%\\Library\\lib\\openblas.lib exit 1    # [win]
+  - name: nomkl
+    version: 3.0
+    build:
+      number: 0
+      track_features:
+        - nomkl
+
+    requirements:
+      run:
+        - {{ pin_subpackage('blas', exact=True) }}
+
+    about:
+      license: BSD
 
 extra:
   recipe-maintainers:
