@@ -132,11 +132,9 @@ outputs:
       number: 0
       track_features:
         - nomkl
-
     requirements:
       run:
         - {{ pin_subpackage('blas', exact=True) }}
-
     about:
       license: BSD
 
