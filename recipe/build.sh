@@ -4,19 +4,20 @@
 # ( https://github.com/xianyi/OpenBLAS/issues/818#issuecomment-207365134 ).
 CF="${CFLAGS}"
 unset CFLAGS
+export LAPACK_FFLAGS="$FFLAGS"
 
-if [[ `uname` == 'Darwin' ]]; then
-     export LIBRARY_SEARCH_VAR=DYLD_FALLBACK_LIBRARY_PATH
-else
-     export LIBRARY_SEARCH_VAR=LD_LIBRARY_PATH
-fi
-eval export ${LIBRARY_SEARCH_VAR}="${BUILD_PREFIX}/lib"
+# if [[ `uname` == 'Darwin' ]]; then
+#      export LIBRARY_SEARCH_VAR=DYLD_FALLBACK_LIBRARY_PATH
+# else
+#      export LIBRARY_SEARCH_VAR=LD_LIBRARY_PATH
+# fi
+# eval export ${LIBRARY_SEARCH_VAR}="${BUILD_PREFIX}/lib"
 
 # Build all CPU targets and allow dynamic configuration
 # Build LAPACK.
 # Enable threading. This can be controlled to a certain number by
 # setting OPENBLAS_NUM_THREADS before loading the library.
-make DYNAMIC_ARCH=1 BINARY=${ARCH} NO_LAPACK=0 NO_AFFINITY=1 USE_THREAD=1 NUM_THREADS=128 CFLAGS="${CF}" FFLAGS="-frecursive"
+make DYNAMIC_ARCH=1 BINARY=${ARCH} NO_LAPACK=0 NO_AFFINITY=1 USE_THREAD=1 NUM_THREADS=128 CFLAGS="${CF}" FFLAGS="$FFLAGS -I${BUILD_PREFIX}/include -frecursive"
 OPENBLAS_NUM_THREADS=$CPU_COUNT make test
 make install PREFIX="${PREFIX}"
 
