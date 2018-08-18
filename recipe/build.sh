@@ -1,5 +1,7 @@
 #!/bin/bash
 
+patch -p0 < segfaults.patch
+
 # See this workaround
 # ( https://github.com/xianyi/OpenBLAS/issues/818#issuecomment-207365134 ).
 CF="${CFLAGS}"
