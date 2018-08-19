@@ -5,9 +5,13 @@ patch < segfaults.patch
 
 # See this workaround
 # ( https://github.com/xianyi/OpenBLAS/issues/818#issuecomment-207365134 ).
-CF="${CFLAGS}"
 unset CFLAGS
-export LAPACK_FFLAGS="${FFLAGS}"
+unset LDFLAGS
+unset CXXFLAGS
+unset FFLAGS
+# CF="${CFLAGS}"
+# unset CFLAGS
+# export LAPACK_FFLAGS="${FFLAGS}"
 
 # Build all CPU targets and allow dynamic configuration
 # Build LAPACK.
@@ -16,8 +20,8 @@ export LAPACK_FFLAGS="${FFLAGS}"
 # Because -Wno-missing-include-dirs does not work with gfortran:
 [[ -d "${PREFIX}"/include ]] || mkdir "${PREFIX}"/include
 export FFLAGS="${FFLAGS} -frecursive -g -fcheck=all -Wall"
-make DYNAMIC_ARCH=1 BINARY=${ARCH} NO_LAPACK=0 NO_AFFINITY=1 USE_THREAD=1 NUM_THREADS=128 CFLAGS="${CF}" FFLAGS="${FFLAGS}"
-OPENBLAS_NUM_THREADS=$CPU_COUNT make test
+make DYNAMIC_ARCH=0 BINARY=${ARCH} NO_LAPACK=0 NO_AFFINITY=1 USE_THREAD=1 NUM_THREADS=24 DEBUG=1
+OPENBLAS_NUM_THREADS=${CPU_COUNT} make test
 make install PREFIX="${PREFIX}"
 
 # As OpenBLAS, now will have all symbols that BLAS, CBLAS or LAPACK have,
