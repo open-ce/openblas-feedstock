@@ -4,10 +4,10 @@
  
  @path = split(/:/, $ENV{"PATH"});
  
-+print "makefile: $makefile"
-+print "config: $config"
-+print "compiler: $compiler"
-+print "compiler_bin: $compiler_bin"
++print "makefile: $makefile\n";
++print "config: $config\n";
++print "compiler: $compiler\n";
++print "compiler_bin: $compiler_bin\n";
 +
  if ($compiler eq "") {
  
