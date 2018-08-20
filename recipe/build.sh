@@ -9,13 +9,17 @@ CF="${CPPFLAGS} ${CFLAGS}"
 unset CFLAGS
 export LAPACK_FFLAGS="${FFLAGS}"
 
+# no openmp on mac.  We're mixing gfortran with clang, and they each have their own openmp.
+[[ ${target_platform} == osx-64 ]] && USE_OPENMP="0" || USE_OPENMP="1"
+
 # Build all CPU targets and allow dynamic configuration
 # Build LAPACK.
 # Enable threading. This can be controlled to a certain number by
 # setting OPENBLAS_NUM_THREADS before loading the library.
 # Because -Wno-missing-include-dirs does not work with gfortran:
 [[ -d "${PREFIX}"/include ]] || mkdir "${PREFIX}"/include
-make DYNAMIC_ARCH=1 BINARY=${ARCH} NO_LAPACK=0 NO_AFFINITY=1 USE_THREAD=1 NUM_THREADS=128 USE_OPENMP=1 CFLAGS="${CF}" FFLAGS="${FFLAGS}"
+make DYNAMIC_ARCH=1 BINARY=${ARCH} NO_LAPACK=0 NO_AFFINITY=1 USE_THREAD=1 NUM_THREADS=128 \
+     USE_OPENMP="${USE_OPENMP}" CFLAGS="${CF}" FFLAGS="${FFLAGS}"
 OPENBLAS_NUM_THREADS=${CPU_COUNT} make test
 make install PREFIX="${PREFIX}"
 
