@@ -1,0 +1,14 @@
+--- work/f_check.orig	2018-08-20 10:45:10.407409563 +0100
++++ work/f_check	2018-08-20 10:51:49.004860628 +0100
+@@ -25,6 +25,11 @@
+ 
+ @path = split(/:/, $ENV{"PATH"});
+ 
++print "makefile: $makefile"
++print "config: $config"
++print "compiler: $compiler"
++print "compiler_bin: $compiler_bin"
++
+ if ($compiler eq "") {
+ 
+     @lists = ("gfortran", "g95", "frt", "fort", "openf90", "openf95",
