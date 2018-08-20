@@ -13,10 +13,8 @@ source:
     - 0002-Fix-gfortran-detection-for-ctng-based-cross-compilers.patch
 
 build:
-  number: 0
+  number: 1
   skip: true  # [win and vc<14]
-  run_exports:
-    - {{ pin_subpackage('openblas', max_pin="x.x.x") }}
 
 requirements:
   build:
@@ -44,9 +42,6 @@ outputs:
       build:
         - {{ compiler("c") }}
         - {{ compiler("fortran") }}
-        # libgcc-ng should be a dependecy of libgfortran
-        # until this is fixed add libgcc explicitly
-        - libgcc-ng  # [linux]
     test:
       requires:
         - python      # [unix]
@@ -58,8 +53,7 @@ outputs:
       license: BSD
       license_file: LICENSE
       summary: An Optimized BLAS library
-      description: |
-        OpenBLAS is based on GotoBLAS2 1.13 BSD version.
+      description: OpenBLAS is based on GotoBLAS2 1.13 BSD version.
       doc_url: http://www.openblas.net/
       doc_source_url: https://github.com/xianyi/OpenBLAS/blob/develop/README.md
       dev_url: https://github.com/xianyi/OpenBLAS
@@ -78,8 +72,7 @@ outputs:
       license: BSD
       license_file: LICENSE
       summary: OpenBLAS static libraries.
-      description: |
-        OpenBLAS is based on GotoBLAS2 1.13 BSD version.
+      description: OpenBLAS is based on GotoBLAS2 1.13 BSD version.
       doc_url: http://www.openblas.net/
       doc_source_url: https://github.com/xianyi/OpenBLAS/blob/develop/README.md
       dev_url: https://github.com/xianyi/OpenBLAS
@@ -102,6 +95,7 @@ outputs:
     requirements:
       run:
         - {{ pin_subpackage("libopenblas", max_pin="x.x.x") }}
+        - {{ pin_subpackage("nomkl", exact=True) }}
     about:
       summary: OpenBLAS headers and libraries for developing software that used OpenBLAS.
 
@@ -112,14 +106,14 @@ outputs:
         - {{ pin_subpackage("libopenblas", max_pin="x.x.x") }}
         - {{ pin_subpackage("openblas-devel", max_pin="x.x.x") }}
         - {{ pin_subpackage("blas", exact=True) }}
+        - {{ pin_subpackage("nomkl", exact=True) }}
 
     about:
       home: http://www.openblas.net/
       license: BSD
       license_file: LICENSE
       summary: An Optimized BLAS library
-      description: |
-        OpenBLAS is based on GotoBLAS2 1.13 BSD version.
+      description: OpenBLAS is based on GotoBLAS2 1.13 BSD version.
       doc_url: http://www.openblas.net/
       doc_source_url: https://github.com/xianyi/OpenBLAS/blob/develop/README.md
       dev_url: https://github.com/xianyi/OpenBLAS
