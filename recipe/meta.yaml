@@ -10,7 +10,7 @@ source:
   sha256: e8ba64f6b103c511ae13736100347deb7121ba9b41ba82052b1a018a65c0cb15
   patches:
     - 0001-remove-hardcoded-make.patch
-    - 0002-Add-verbosity-to-f_check.patch
+    - 0002-Fix-gfortran-detection-for-ctng-based-cross-compilers.patch
 
 build:
   number: 0
