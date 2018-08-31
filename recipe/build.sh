@@ -1,11 +1,15 @@
 #!/bin/bash
 
+set -e
+# Stuart's recommendation to stop lapack-test from failing
+ulimit -s 50000
+
 # https://github.com/xianyi/OpenBLAS/wiki/faq#Linux_SEGFAULT
 patch < segfaults.patch
 
 # See this workaround
 # ( https://github.com/xianyi/OpenBLAS/issues/818#issuecomment-207365134 ).
-CF="${CPPFLAGS} ${CFLAGS}"
+CF="${CPPFLAGS} ${CFLAGS} -Wno-unused-parameter -Wno-old-style-declaration"
 unset CFLAGS
 export LAPACK_FFLAGS="${FFLAGS}"
 
@@ -21,6 +25,7 @@ export LAPACK_FFLAGS="${FFLAGS}"
 make DYNAMIC_ARCH=1 BINARY=${ARCH} NO_LAPACK=0 NO_AFFINITY=1 USE_THREAD=1 NUM_THREADS=128 \
      USE_OPENMP="${USE_OPENMP}" CFLAGS="${CF}" FFLAGS="${FFLAGS}"
 OPENBLAS_NUM_THREADS=${CPU_COUNT} make test
+OPENBLAS_NUM_THREADS=${CPU_COUNT} make lapack-test
 make install PREFIX="${PREFIX}"
 
 # As OpenBLAS, now will have all symbols that BLAS, CBLAS or LAPACK have,
