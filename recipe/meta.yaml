@@ -13,7 +13,7 @@ source:
     - 0002-Fix-gfortran-detection-for-ctng-based-cross-compilers.patch
 
 build:
-  number: 0
+  number: 1
   skip: true  # [win and vc<14]
 
 requirements:
@@ -90,11 +90,11 @@ outputs:
       - lib/pkgconfig/openblas.pc
       - site.cfg
     run_exports:
-      - {{ pin_subpackage("libopenblas", max_pin="x.x.x") }}
-      - {{ pin_subpackage("blas", exact=True) }}
+      - {{ pin_subpackage("libopenblas") }}
+      - blas * openblas
     requirements:
       run:
-        - {{ pin_subpackage("libopenblas", max_pin="x.x.x") }}
+        - {{ pin_subpackage("libopenblas", exact=True) }}
         - {{ pin_subpackage("nomkl", exact=True) }}
     about:
       summary: OpenBLAS headers and libraries for developing software that used OpenBLAS.
@@ -103,8 +103,8 @@ outputs:
   - name: openblas
     requirements:
       run:
-        - {{ pin_subpackage("libopenblas", max_pin="x.x.x") }}
-        - {{ pin_subpackage("openblas-devel", max_pin="x.x.x") }}
+        - {{ pin_subpackage("libopenblas", exact=True) }}
+        - {{ pin_subpackage("openblas-devel", exact=True) }}
         - {{ pin_subpackage("blas", exact=True) }}
         - {{ pin_subpackage("nomkl", exact=True) }}
 
@@ -136,7 +136,7 @@ outputs:
         - nomkl
     requirements:
       run:
-        - {{ pin_subpackage("blas", exact=True) }}
+        - blas * openblas
     about:
       license: BSD
 
