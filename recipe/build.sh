@@ -14,7 +14,12 @@ unset CFLAGS
 export LAPACK_FFLAGS="${FFLAGS}"
 
 # no openmp on mac.  We're mixing gfortran with clang, and they each have their own openmp.
-[[ ${target_platform} == osx-64 ]] && USE_OPENMP="0" || USE_OPENMP="1"
+if [[ ${target_platform} == osx-64 ]]; then
+    USE_OPENMP="0"
+    export CPPFLAGS="$CPPFLAGS -Wl,-rpath=$PREFIX/lib"
+else
+    USE_OPENMP="1"
+fi
 
 # Build all CPU targets and allow dynamic configuration
 # Build LAPACK.
