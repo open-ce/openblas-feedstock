@@ -9,14 +9,16 @@ patch < segfaults.patch
 
 # See this workaround
 # ( https://github.com/xianyi/OpenBLAS/issues/818#issuecomment-207365134 ).
-CF="${CPPFLAGS} ${CFLAGS} -Wno-unused-parameter -Wno-old-style-declaration"
+export CF="${CPPFLAGS} ${CFLAGS} -Wno-unused-parameter -Wno-old-style-declaration"
 unset CFLAGS
 export LAPACK_FFLAGS="${FFLAGS}"
 
 # no openmp on mac.  We're mixing gfortran with clang, and they each have their own openmp.
 if [[ ${target_platform} == osx-64 ]]; then
     USE_OPENMP="0"
-    export CPPFLAGS="$CPPFLAGS -Wl,-rpath=$PREFIX/lib"
+    export CF="$CF -Wl,-rpath,$PREFIX/lib"
+    export LAPACK_FFLAGS="$LAPACK_FFLAGS -Wl,-rpath,$PREFIX/lib"
+    export FFLAGS="$FFLAGS -Wl,-rpath,$PREFIX/lib"
 else
     USE_OPENMP="1"
 fi
@@ -29,9 +31,9 @@ fi
 [[ -d "${PREFIX}"/include ]] || mkdir "${PREFIX}"/include
 make DYNAMIC_ARCH=1 BINARY=${ARCH} NO_LAPACK=0 NO_AFFINITY=1 USE_THREAD=1 NUM_THREADS=128 \
      USE_OPENMP="${USE_OPENMP}" CFLAGS="${CF}" FFLAGS="${FFLAGS}"
-OPENBLAS_NUM_THREADS=${CPU_COUNT} make test
-OPENBLAS_NUM_THREADS=${CPU_COUNT} make lapack-test
-make install PREFIX="${PREFIX}"
+OPENBLAS_NUM_THREADS=${CPU_COUNT} CFLAGS="${CF}" FFLAGS="${FFLAGS}" make test
+OPENBLAS_NUM_THREADS=${CPU_COUNT} CFLAGS="${CF}" FFLAGS="${FFLAGS}" make lapack-test
+CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}"
 
 # As OpenBLAS, now will have all symbols that BLAS, CBLAS or LAPACK have,
 # create libraries with the standard names that are linked back to
