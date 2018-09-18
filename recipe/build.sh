@@ -11,6 +11,8 @@ patch < segfaults.patch
 # ( https://github.com/xianyi/OpenBLAS/issues/818#issuecomment-207365134 ).
 export CF="${CPPFLAGS} ${CFLAGS} -Wno-unused-parameter -Wno-old-style-declaration"
 unset CFLAGS
+# Gnu OpenMP is not fork-safe.  We disable openmp right now, so that downstream packages don't hang as a result of this.
+export FFLAGS="${FFLAGS/-fopenmp/ }"
 export LAPACK_FFLAGS="${FFLAGS}"
 
 # no openmp on mac.  We're mixing gfortran with clang, and they each have their own openmp.
@@ -20,8 +22,11 @@ if [[ ${target_platform} == osx-64 ]]; then
     export LAPACK_FFLAGS="$LAPACK_FFLAGS -Wl,-rpath,$PREFIX/lib"
     export FFLAGS="$FFLAGS -Wl,-rpath,$PREFIX/lib"
 else
-    USE_OPENMP="1"
+    # Gnu OpenMP is not fork-safe.  We disable openmp right now, so that downstream packages don't hang as a result of this.
+    # USE_OPENMP="1"
+    USE_OPENMP="0"
 fi
+
 
 # Build all CPU targets and allow dynamic configuration
 # Build LAPACK.
@@ -29,6 +34,13 @@ fi
 # setting OPENBLAS_NUM_THREADS before loading the library.
 # Because -Wno-missing-include-dirs does not work with gfortran:
 [[ -d "${PREFIX}"/include ]] || mkdir "${PREFIX}"/include
+
+# USE_SIMPLE_THREADED_LEVEL3 is necessary to avoid hangs when more than one process uses blas:
+#    https://github.com/xianyi/OpenBLAS/issues/1456
+#    https://github.com/xianyi/OpenBLAS/issues/294
+#    https://github.com/scikit-learn/scikit-learn/issues/636
+# USE_SIMPLE_THREADED_LEVEL3=1
+
 make DYNAMIC_ARCH=1 BINARY=${ARCH} NO_LAPACK=0 NO_AFFINITY=1 USE_THREAD=1 NUM_THREADS=128 \
      USE_OPENMP="${USE_OPENMP}" CFLAGS="${CF}" FFLAGS="${FFLAGS}"
 OPENBLAS_NUM_THREADS=${CPU_COUNT} CFLAGS="${CF}" FFLAGS="${FFLAGS}" make test
