@@ -2,8 +2,6 @@ mkdir build
 cd build
 
 cmake -G "NMake Makefiles JOM"              ^
-    -DCMAKE_C_COMPILER=clang-cl             ^
-    -DCMAKE_Fortran_COMPILER=flang          ^
     -DCMAKE_BUILD_TYPE=Release              ^
     -DCMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% ^
     -DDYNAMIC_ARCH=ON                       ^
