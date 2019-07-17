@@ -16,6 +16,7 @@ source:
     #   https://github.com/xianyi/OpenBLAS/blob/dbfd7524cd94fe15930ed2f78b7789f15b22fec0/Makefile.rule#L112-L116
     # Also, see # https://github.com/xianyi/OpenBLAS/issues/1761
     # - 0003-turn-TLS-off.patch
+    - gh2111.patch
 
 build:
   number: 1
