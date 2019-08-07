@@ -129,17 +129,17 @@ outputs:
     version: 1.0
     build:
       string: openblas
-
-  - name: nomkl
-    version: 3.0
-    build:
-      number: 0
       # track_features doesn't really track anything anymore (blas metapackage
       # dependencies do the same job better). This is still here, though, as it
       # effectively "weighs down" nomkl packages, allowing mkl to take
       # precedence when defaults is the top channel priority.
       track_features:
         - nomkl
+
+  - name: nomkl
+    version: 3.0
+    build:
+      number: 0
     requirements:
       run:
         - blas * openblas
