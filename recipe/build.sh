@@ -71,6 +71,11 @@ case "${target_platform}" in
         build_opts+=(BINARY="64")
         build_opts+=(DYNAMIC_ARCH=1)
         ;;
+    linux-s390x)
+        build_opts+=(TARGET="Z14")
+        build_opts+=(BINARY="64")
+        build_opts+=(DYNAMIC_ARCH=0)
+        ;;
     linux-64)
         # Oldest x86/x64 target microarch that has 64-bit extensions
         build_opts+=(TARGET="PRESCOTT")
