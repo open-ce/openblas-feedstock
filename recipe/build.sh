@@ -76,6 +76,10 @@ case "${target_platform}" in
         TARGET="CORE2"
         BINARY="64"
         ;;
+    linux-s390x)
+        TARGET="Z14"
+        BINARY="64"
+        ;;
 esac
 
 # Placeholder for future builds that may include ILP64 variants.
