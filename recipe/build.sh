@@ -10,6 +10,9 @@ ulimit -s 50000
 # https://github.com/xianyi/OpenBLAS/wiki/faq#Linux_SEGFAULT
 patch < segfaults.patch
 
+# Build configuration options
+declare -a build_opts
+
 # Fix ctest not automatically discovering tests
 LDFLAGS=$(echo "${LDFLAGS}" | sed "s/-Wl,--gc-sections//g")
 
@@ -41,6 +44,7 @@ if [[ "$USE_OPENMP" == "1" ]]; then
     # Run the fork test (as part of `openblas_utest`)
     sed -i.bak 's/test_potrs.o/test_potrs.o test_fork.o/g' utest/Makefile
 fi
+build_opts+=(USE_OPENMP=${USE_OPENMP})
 
 if [ ! -z "$FFLAGS" ]; then
     # Don't use GNU OpenMP, which is not fork-safe
@@ -58,38 +62,49 @@ fi
 # Set CPU Target
 case "${target_platform}" in
     linux-aarch64)
-        TARGET="ARMV8"
-        BINARY="64"
+        build_opts+=(TARGET="ARMV8")
+        build_opts+=(BINARY="64")
+        build_opts+=(DYNAMIC_ARCH=1)
         ;;
     linux-ppc64le)
-        TARGET="POWER8"
-        BINARY="64"
+        build_opts+=(TARGET="POWER8")
+        build_opts+=(BINARY="64")
+        build_opts+=(DYNAMIC_ARCH=1)
+        ;;
+    linux-s390x)
+        build_opts+=(TARGET="Z14")
+        build_opts+=(BINARY="64")
+        build_opts+=(DYNAMIC_ARCH=0)
         ;;
     linux-64)
         # Oldest x86/x64 target microarch that has 64-bit extensions
-        TARGET="PRESCOTT"
-        BINARY="64"
+        build_opts+=(TARGET="PRESCOTT")
+        build_opts+=(BINARY="64")
+        build_opts+=(DYNAMIC_ARCH=1)
         ;;
     osx-64)
         # Oldest OS X version we support is Mavericks (10.9), which requires a
         # system with at least an Intel Core 2 CPU.
-        TARGET="CORE2"
-        BINARY="64"
-        ;;
-    linux-s390x)
-        TARGET="Z14"
-        BINARY="64"
+        build_opts+=(TARGET="CORE2")
+        build_opts+=(BINARY="64")
+        build_opts+=(DYNAMIC_ARCH=1)
         ;;
 esac
 
 # Placeholder for future builds that may include ILP64 variants.
-INTERFACE64=0
-SYMBOLSUFFIX=""
+build_opts+=(INTERFACE64=0)
+build_opts+=(SYMBOLSUFFIX="")
 
-# Build all CPU targets and allow dynamic configuration
 # Build LAPACK.
+build_opts+=(NO_LAPACK=0)
+
 # Enable threading. This can be controlled to a certain number by
 # setting OPENBLAS_NUM_THREADS before loading the library.
+build_opts+=(USE_THREAD=1)
+build_opts+=(NUM_THREADS=128)
+
+# Disable CPU/memory affinity handling to avoid problems with NumPy and R
+build_opts+=(NO_AFFINITY=1)
 
 # USE_SIMPLE_THREADED_LEVEL3 is necessary to avoid hangs when more than one process uses blas:
 #    https://github.com/xianyi/OpenBLAS/issues/1456
@@ -97,17 +112,18 @@ SYMBOLSUFFIX=""
 #    https://github.com/scikit-learn/scikit-learn/issues/636
 #USE_SIMPLE_THREADED_LEVEL3=1
 
-make DYNAMIC_ARCH=1 BINARY=${BINARY} NO_LAPACK=0 NO_AFFINITY=1 USE_THREAD=1 NUM_THREADS=128 \
-     HOST=${HOST} TARGET=${TARGET} CROSS_SUFFIX="${HOST}-" \
-     INTERFACE64=${INTERFACE64} SYMBOLSUFFIX=${SYMBOLSUFFIX} \
-     USE_OPENMP="${USE_OPENMP}" CFLAGS="${CF}" FFLAGS="${FFLAGS}"
+make ${build_opts[@]} \
+     HOST=${HOST} CROSS_SUFFIX="${HOST}-" \
+     CFLAGS="${CF}" FFLAGS="${FFLAGS}"
 
 # BLAS tests are now run as part of build process; LAPACK tests still need to
 # be separately built and run.
 #OPENBLAS_NUM_THREADS=${CPU_COUNT} CFLAGS="${CF}" FFLAGS="${FFLAGS}" make test
-OPENBLAS_NUM_THREADS=${CPU_COUNT} CFLAGS="${CF}" FFLAGS="${FFLAGS}" make lapack-test
+OPENBLAS_NUM_THREADS=${CPU_COUNT} CFLAGS="${CF}" FFLAGS="${FFLAGS}" \
+    make lapack-test ${build_opts[@]}
 
-CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}"
+CFLAGS="${CF}" FFLAGS="${FFLAGS}" \
+    make install PREFIX="${PREFIX}" ${build_opts[@]}
 
 # As OpenBLAS, now will have all symbols that BLAS, CBLAS or LAPACK have,
 # create libraries with the standard names that are linked back to
