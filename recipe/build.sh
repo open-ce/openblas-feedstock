@@ -2,8 +2,10 @@
 
 set -e -u
 
-# Stuart's recommendation to stop lapack-test from failing
-ulimit -s 50000
+if [[ ${target_platform} != linux-aarch64 ]]; then
+    # Stuart's recommendation to stop lapack-test from failing
+    ulimit -s 50000
+fi
 
 # Fix segfault issue arising from a bug in Linux 2.6.32; we can probably skip
 # this patch once we drop support for CentOS/RHEL 6.x. For details, see:
