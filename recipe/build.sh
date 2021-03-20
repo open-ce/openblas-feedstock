@@ -61,35 +61,29 @@ fi
 [[ -d "${PREFIX}"/include ]] || mkdir "${PREFIX}"/include
 [[ -d "${PREFIX}"/lib ]] || mkdir "${PREFIX}"/lib
 
-# Set CPU Target
+# All our target platforms are 64-bit and support dynamic dispatch.
+build_opts+=(BINARY="64")
+build_opts+=(DYNAMIC_ARCH=1)
+
+# Set target platform-/CPU-specific options
 case "${target_platform}" in
     linux-aarch64)
         build_opts+=(TARGET="ARMV8")
-        build_opts+=(BINARY="64")
-        build_opts+=(DYNAMIC_ARCH=1)
         ;;
     linux-ppc64le)
         build_opts+=(TARGET="POWER8")
-        build_opts+=(BINARY="64")
-        build_opts+=(DYNAMIC_ARCH=1)
         ;;
     linux-s390x)
         build_opts+=(TARGET="Z14")
-        build_opts+=(BINARY="64")
-        build_opts+=(DYNAMIC_ARCH=0)
         ;;
     linux-64)
         # Oldest x86/x64 target microarch that has 64-bit extensions
         build_opts+=(TARGET="PRESCOTT")
-        build_opts+=(BINARY="64")
-        build_opts+=(DYNAMIC_ARCH=1)
         ;;
     osx-64)
         # Oldest OS X version we support is Mavericks (10.9), which requires a
         # system with at least an Intel Core 2 CPU.
         build_opts+=(TARGET="CORE2")
-        build_opts+=(BINARY="64")
-        build_opts+=(DYNAMIC_ARCH=1)
         ;;
 esac
 
