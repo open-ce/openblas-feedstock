@@ -102,6 +102,46 @@ build_opts+=(NUM_THREADS=128)
 # Disable CPU/memory affinity handling to avoid problems with NumPy and R
 build_opts+=(NO_AFFINITY=1)
 
+# Fix buggy AVX-512 intrinsics header in older GCC releases; references:
+#   * https://gcc.gnu.org/bugzilla/show_bug.cgi?id=87517
+#   * https://gcc.gnu.org/legacy-ml/gcc-patches/2018-01/msg01962.html
+# TODO: Remove this once we update the defaults linux-64 compilers.
+if [[ ${target_platform} == "linux-64" && `$CC -dumpversion` == 7.3.* ]]; then
+    pushd "`$CC -print-search-dirs | grep '^install: ' | cut -c10-`"
+    patch -p0 <<'EOF'
+--- include/avx512fintrin.h
++++ include/avx512fintrin.h
+@@ -3333,7 +3333,7 @@
+     (__m512d)__builtin_ia32_vfmaddsubpd512_mask(A, B, C, -1, R)
+ 
+ #define _mm512_mask_fmaddsub_round_pd(A, U, B, C, R)    \
+-    (__m512d)__builtin_ia32_vfmaddpd512_mask(A, B, C, U, R)
++    (__m512d)__builtin_ia32_vfmaddsubpd512_mask(A, B, C, U, R)
+ 
+ #define _mm512_mask3_fmaddsub_round_pd(A, B, C, U, R)   \
+     (__m512d)__builtin_ia32_vfmaddsubpd512_mask3(A, B, C, U, R)
+@@ -7298,7 +7298,7 @@
+ 
+ extern __inline __m512d
+ __attribute__ ((__gnu_inline__, __always_inline__, __artificial__))
+-_mm512_abs_pd (__m512 __A)
++_mm512_abs_pd (__m512d __A)
+ {
+   return (__m512d) _mm512_and_epi64 ((__m512i) __A,
+ 				     _mm512_set1_epi64 (0x7fffffffffffffffLL));
+@@ -7306,7 +7306,7 @@
+ 
+ extern __inline __m512d
+ __attribute__ ((__gnu_inline__, __always_inline__, __artificial__))
+-_mm512_mask_abs_pd (__m512d __W, __mmask8 __U, __m512 __A)
++_mm512_mask_abs_pd (__m512d __W, __mmask8 __U, __m512d __A)
+ {
+   return (__m512d)
+ 	 _mm512_mask_and_epi64 ((__m512i) __W, __U, (__m512i) __A,
+EOF
+    popd
+fi
+
 # USE_SIMPLE_THREADED_LEVEL3 is necessary to avoid hangs when more than one process uses blas:
 #    https://github.com/xianyi/OpenBLAS/issues/1456
 #    https://github.com/xianyi/OpenBLAS/issues/294
