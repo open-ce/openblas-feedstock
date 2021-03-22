@@ -1,4 +1,4 @@
-{% set version = "0.3.10" %}
+{% set version = "0.3.13" %}
 
 package:
   name: openblas_multipkg
@@ -7,9 +7,8 @@ package:
 source:
   fn: openblas-{{ version }}.tar.gz
   url: https://github.com/xianyi/OpenBLAS/archive/v{{ version }}.tar.gz
-  sha256: 0484d275f87e9b8641ff2eecaa9df2830cbe276ac79ad80494822721de6e1693
+  sha256: 79197543b17cc314b7e43f7a33148c308b0807cd6381ee77f77e15acf3e6459e
   patches:
-    - 0001-remove-hardcoded-make.patch
     - 0002-Fix-gfortran-detection-for-ctng-based-cross-compilers.patch
     # new in 0.3 series
     # requires glibc >=2.21; disable for the foreseeable future.
@@ -19,7 +18,7 @@ source:
     #- gh2111.patch
 
 build:
-  number: 1
+  number: 0
   skip: true  # [win]
   missing_dso_whitelist:
     # Mildly concerned this triggers an overlinking warning, but it may be a
@@ -38,7 +37,6 @@ requirements:
     - make                       # [unix]
 
 outputs:
-
   - name: libopenblas
     files:
       - lib/libblas{{ SHLIB_EXT }}    # [unix]
