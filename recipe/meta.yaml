@@ -56,7 +56,8 @@ outputs:
         - if not exist %PREFIX%\\Library\\lib\\openblas.lib exit 1    # [win]
     about:
       home: http://www.openblas.net/
-      license: BSD
+      license: BSD-3-clause
+      license_family: BSD
       license_file: LICENSE
       summary: An Optimized BLAS library
       description: OpenBLAS is based on GotoBLAS2 1.13 BSD version.
@@ -75,7 +76,8 @@ outputs:
         - test -f ${PREFIX}/lib/libopenblas.a                            # [unix]
     about:
       home: http://www.openblas.net/
-      license: BSD
+      license: BSD-3-clause
+      license_family: BSD
       license_file: LICENSE
       summary: OpenBLAS static libraries.
       description: OpenBLAS is based on GotoBLAS2 1.13 BSD version.
@@ -116,7 +118,8 @@ outputs:
 
     about:
       home: http://www.openblas.net/
-      license: BSD
+      license: BSD-3-clause
+      license_family: BSD
       license_file:
         - LICENSE
         - lapack-netlib/LICENSE
