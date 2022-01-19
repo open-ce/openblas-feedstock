@@ -1,4 +1,4 @@
-{% set version = "0.3.13" %}
+{% set version = "0.3.18" %}
 
 package:
   name: openblas_multipkg
@@ -7,9 +7,9 @@ package:
 source:
   fn: openblas-{{ version }}.tar.gz
   url: https://github.com/xianyi/OpenBLAS/archive/v{{ version }}.tar.gz
-  sha256: 79197543b17cc314b7e43f7a33148c308b0807cd6381ee77f77e15acf3e6459e
-  patches:
-    - 0002-Fix-gfortran-detection-for-ctng-based-cross-compilers.patch
+  sha256: 1632c1e8cca62d8bed064b37747e331a1796fc46f688626337362bf0d16aeadb
+  #  patches:
+  #    - 0002-Fix-gfortran-detection-for-ctng-based-cross-compilers.patch
     # new in 0.3 series
     # requires glibc >=2.21; disable for the foreseeable future.
     #   https://github.com/xianyi/OpenBLAS/blob/dbfd7524cd94fe15930ed2f78b7789f15b22fec0/Makefile.rule#L112-L116
@@ -18,8 +18,7 @@ source:
     #- gh2111.patch
 
 build:
-  number: 2
-  skip: true  # [win]
+  number: 1
   missing_dso_whitelist:
     # Mildly concerned this triggers an overlinking warning, but it may be a
     # sign some S390X-specific changes needed in conda-build.  Leaving this in
@@ -28,33 +27,33 @@ build:
 
 requirements:
   build:
-    - {{ compiler("c") }}
-    - {{ compiler("fortran") }}
+    - {{ compiler("c") }}        #[ppc_arch != "p10"]
+    - {{ compiler("fortran") }}  #[ppc_arch != "p10"]
     - perl
     - cmake                      # [win]
     - curl                       # [win]
     - jom                        # [win]
-    - make                       # [unix]
-    - patch                      # [unix]
+    - make                       # [linux]
+    - patch                      # [linux]
 
 outputs:
   - name: libopenblas
     files:
-      - lib/libblas{{ SHLIB_EXT }}    # [unix]
-      - lib/libcblas{{ SHLIB_EXT }}   # [unix]
-      - lib/liblapack{{ SHLIB_EXT }}  # [unix]
+      - lib/libblas{{ SHLIB_EXT }}    # [linux]
+      - lib/libcblas{{ SHLIB_EXT }}   # [linux]
+      - lib/liblapack{{ SHLIB_EXT }}  # [linux]
       - lib/libopenblas*.so*          # [linux]
       - lib/libopenblas*.dylib        # [osx]
     requirements:
       build:
-        - {{ compiler("c") }}
-        - {{ compiler("fortran") }}
+        - {{ compiler("c") }}           #[ppc_arch != "p10"]
+        - {{ compiler("fortran") }}     #[ppc_arch != "p10"]
+
     test:
       requires:
-        - python      # [unix]
+        - python {{ python }}      # [linux]
       commands:
-        - python -c "import ctypes; ctypes.cdll['${PREFIX}/lib/libopenblas${SHLIB_EXT}']"  # [unix]
-        - if not exist %PREFIX%\\Library\\lib\\openblas.lib exit 1    # [win]
+        - python -c "import ctypes; ctypes.cdll['${PREFIX}/lib/libopenblas${SHLIB_EXT}']"  # [linux]
     about:
       home: http://www.openblas.net/
       license: BSD-3-clause
