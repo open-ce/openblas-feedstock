@@ -24,7 +24,6 @@ then
 fi
 
 echo `which gcc`
-exit 1
 if [[ ${target_platform} != linux-aarch64 ]]; then
     # Stuart's recommendation to stop lapack-test from failing
     ulimit -s 50000
