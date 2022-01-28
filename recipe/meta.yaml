@@ -22,6 +22,8 @@ build:
     # sign some S390X-specific changes needed in conda-build.  Leaving this in
     # while we investigate so the linux-s390x build out can continue.
     - "*/ld64.so.1"   # [s390x]
+  script_env:
+    - GCC_11_HOME             #[ppc_arch == 'p10']
 
 requirements:
   build:

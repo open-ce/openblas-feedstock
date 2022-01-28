@@ -20,7 +20,13 @@ set -ex
 PATH_VAR="$PATH"
 if [[ $ppc_arch == "p10" ]]
 then
-  export PATH=/opt/rh/gcc-toolset-11/root/usr/bin/:$PATH
+    if [[ -z "${GCC_11_HOME}" ]];
+    then
+        echo "Please set GCC_11_HOME to the install path of gcc-toolset-11"
+        exit 1
+    else
+        export PATH=${GCC_11_HOME}/bin/:$PATH
+    fi
 fi
 
 echo `which gcc`
