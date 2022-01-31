@@ -29,7 +29,9 @@ then
     fi
 fi
 
-echo `which gcc`
+GCC_USED=`which gcc`
+echo "GCC being used is ${GCC_USED}"
+
 if [[ ${target_platform} != linux-aarch64 ]]; then
     # Stuart's recommendation to stop lapack-test from failing
     ulimit -s 50000
