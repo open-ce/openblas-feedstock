@@ -27,10 +27,9 @@ then
     else
         export PATH=${GCC_11_HOME}/bin/:$PATH
     fi
+    GCC_USED=`which gcc`
+    echo "GCC being used is ${GCC_USED}"
 fi
-
-GCC_USED=`which gcc`
-echo "GCC being used is ${GCC_USED}"
 
 if [[ ${target_platform} != linux-aarch64 ]]; then
     # Stuart's recommendation to stop lapack-test from failing
