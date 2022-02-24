@@ -29,6 +29,8 @@ then
     fi
     GCC_USED=`which gcc`
     echo "GCC being used is ${GCC_USED}"
+else
+    export LDFLAGS="${LDFLAGS} -L$PREFIX/lib -L$BUILD_PREFIX/lib"
 fi
 
 if [[ ${target_platform} != linux-aarch64 ]]; then
