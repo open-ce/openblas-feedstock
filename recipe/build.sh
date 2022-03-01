@@ -1,6 +1,37 @@
 #!/bin/bash
+# *****************************************************************
+# (C) Copyright IBM Corp. 2022. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# *****************************************************************
 
-set -e -u
+set -ex
+
+PATH_VAR="$PATH"
+if [[ $ppc_arch == "p10" ]]
+then
+    if [[ -z "${GCC_11_HOME}" ]];
+    then
+        echo "Please set GCC_11_HOME to the install path of gcc-toolset-11"
+        exit 1
+    else
+        export PATH=${GCC_11_HOME}/bin/:$PATH
+    fi
+    GCC_USED=`which gcc`
+    echo "GCC being used is ${GCC_USED}"
+else
+    export LDFLAGS="${LDFLAGS} -L$PREFIX/lib -L$BUILD_PREFIX/lib"
+fi
 
 if [[ ${target_platform} != linux-aarch64 ]]; then
     # Stuart's recommendation to stop lapack-test from failing
@@ -183,3 +214,6 @@ cp "${RECIPE_DIR}"/site.cfg "${PREFIX}"/site.cfg
 echo library_dirs = ${PREFIX}/lib >> "${PREFIX}"/site.cfg
 echo include_dirs = ${PREFIX}/include >> "${PREFIX}"/site.cfg
 echo runtime_include_dirs = ${PREFIX}/lib >> "${PREFIX}"/site.cfg
+
+#Restore PATH variable
+export PATH="$PATH_VAR"
