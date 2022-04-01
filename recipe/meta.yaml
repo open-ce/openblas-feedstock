@@ -14,6 +14,8 @@ source:
     # Also, see # https://github.com/xianyi/OpenBLAS/issues/1761
     # - 0003-turn-TLS-off.patch
     #- gh2111.patch
+#  patches:
+#    - fork.patch
 
 build:
   number: 1
@@ -35,6 +37,7 @@ requirements:
     - jom                        # [win]
     - make                       # [linux]
     - patch                      # [linux]
+    - llvm-openmp
 
 outputs:
   - name: libopenblas
@@ -47,6 +50,7 @@ outputs:
       build:
         - {{ compiler("c") }}           #[ppc_arch != "p10"]
         - {{ compiler("fortran") }}     #[ppc_arch != "p10"]
+        - llvm-openmp
 
     test:
       requires:

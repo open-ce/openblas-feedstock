@@ -17,6 +17,8 @@
 
 set -ex
 
+export USE_OPENMP=1
+
 PATH_VAR="$PATH"
 if [[ $ppc_arch == "p10" ]]
 then
@@ -64,19 +66,12 @@ if [[ ${target_platform} == osx-64 ]]; then
     export CF="$CF -Wl,-rpath,$PREFIX/lib"
     export LAPACK_FFLAGS="${LAPACK_FFLAGS:-} -Wl,-rpath,$PREFIX/lib"
     export FFLAGS="$FFLAGS -Wl,-rpath,$PREFIX/lib"
-elif [[ ${target_platform} == linux-* ]]; then
-    # GNU OpenMP is not fork-safe.  We disable OpenMP for now, so that
-    # downstream packages don't hang as a result.  Conda-forge builds OpenBLAS
-    # for Linux using gfortran but uses the LLVM OpenMP implementation at
-    # run-time; however, we want to avoid such mixing in the defaults channel
-    # until more extensive has been done.
-    USE_OPENMP="0"
 fi
 
-if [[ "$USE_OPENMP" == "1" ]]; then
-    # Run the fork test (as part of `openblas_utest`)
-    sed -i.bak 's/test_potrs.o/test_potrs.o test_fork.o/g' utest/Makefile
-fi
+#if [[ "$USE_OPENMP" == "1" ]]; then
+#    # Run the fork test (as part of `openblas_utest`)
+#    sed -i.bak 's/test_potrs.o/test_potrs.o test_fork.o/g' utest/Makefile
+#fi
 build_opts+=(USE_OPENMP=${USE_OPENMP})
 
 if [ ! -z "$FFLAGS" ]; then
