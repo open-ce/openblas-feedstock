@@ -14,8 +14,6 @@ source:
     # Also, see # https://github.com/xianyi/OpenBLAS/issues/1761
     # - 0003-turn-TLS-off.patch
     #- gh2111.patch
-#  patches:
-#    - fork.patch
 
 build:
   number: 1
