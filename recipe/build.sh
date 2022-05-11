@@ -19,7 +19,7 @@ set -ex
 
 export USE_OPENMP=1
 
-if [[ $ppc_arch != "p10" ]]
+if [[ $ppc_arch != "p10" ]]; then
     export LDFLAGS="${LDFLAGS} -L$PREFIX/lib -L$BUILD_PREFIX/lib"
 fi
 
