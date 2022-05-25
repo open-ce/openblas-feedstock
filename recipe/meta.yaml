@@ -1,4 +1,4 @@
-{% set version = "0.3.18" %}
+{% set version = "0.3.20" %}
 
 package:
   name: openblas_multipkg
@@ -7,7 +7,7 @@ package:
 source:
   fn: openblas-{{ version }}.tar.gz
   url: https://github.com/xianyi/OpenBLAS/archive/v{{ version }}.tar.gz
-  sha256: 1632c1e8cca62d8bed064b37747e331a1796fc46f688626337362bf0d16aeadb
+  sha256: 8495c9affc536253648e942908e88e097f2ec7753ede55aca52e5dead3029e3c
     # new in 0.3 series
     # requires glibc >=2.21; disable for the foreseeable future.
     #   https://github.com/xianyi/OpenBLAS/blob/dbfd7524cd94fe15930ed2f78b7789f15b22fec0/Makefile.rule#L112-L116
@@ -16,7 +16,7 @@ source:
     #- gh2111.patch
 
 build:
-  number: 3
+  number: 1
   missing_dso_whitelist:
     # Mildly concerned this triggers an overlinking warning, but it may be a
     # sign some S390X-specific changes needed in conda-build.  Leaving this in
