@@ -34,6 +34,13 @@ requirements:
     - make                       # [linux]
     - patch                      # [linux]
     - llvm-openmp
+    - libgcc-ng {{ libgcc }}            #[cudatoolkit == "11.2"]
+    - libstdcxx-ng {{ libstdcxx }}      #[cudatoolkit == "11.2"]
+    - libgfortran-ng {{ libgfortran }}  #[cudatoolkit == "11.2"]
+  host:
+    - libgcc-ng {{ libgcc }}            #[cudatoolkit == "11.2"]
+    - libstdcxx-ng {{ libstdcxx }}      #[cudatoolkit == "11.2"]
+    - libgfortran-ng {{ libgfortran }}  #[cudatoolkit == "11.2"]
 
 outputs:
   - name: libopenblas
@@ -47,6 +54,13 @@ outputs:
         - {{ compiler("c") }}           #[ppc_arch != "p10"]
         - {{ compiler("fortran") }}     #[ppc_arch != "p10"]
         - llvm-openmp
+        - libgcc-ng {{ libgcc }}        #[cudatoolkit == "11.2"]
+        - libstdcxx-ng {{ libstdcxx }}  #[cudatoolkit == "11.2"]
+        - libgfortran-ng {{ libgfortran }}   #[cudatoolkit == "11.2"]
+      host:
+        - libgcc-ng {{ libgcc }}        #[cudatoolkit == "11.2"]
+        - libstdcxx-ng {{ libstdcxx }}  #[cudatoolkit == "11.2"]
+        - libgfortran-ng {{ libgfortran }}   #[cudatoolkit == "11.2"]
 
     test:
       requires:
@@ -100,6 +114,14 @@ outputs:
       - {{ pin_subpackage("libopenblas") }}
       - blas * openblas
     requirements:
+      build:
+        - libgcc-ng {{ libgcc }}            #[cudatoolkit == "11.2"]
+        - libstdcxx-ng {{ libstdcxx }}      #[cudatoolkit == "11.2"]
+        - libgfortran-ng {{ libgfortran }}  #[cudatoolkit == "11.2"]
+      host:
+        - libgcc-ng {{ libgcc }}            #[cudatoolkit == "11.2"]
+        - libstdcxx-ng {{ libstdcxx }}      #[cudatoolkit == "11.2"]
+        - libgfortran-ng {{ libgfortran }}  #[cudatoolkit == "11.2"]
       run:
         - {{ pin_subpackage("libopenblas", exact=True) }}
         - {{ pin_subpackage("nomkl", exact=True) }}
