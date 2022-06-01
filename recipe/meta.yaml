@@ -25,8 +25,8 @@ build:
 
 requirements:
   build:
-    - {{ compiler("c") }}        #[ppc_arch != "p10"]
-    - {{ compiler("fortran") }}  #[ppc_arch != "p10"]
+    - {{ compiler("c") }}
+    - {{ compiler("fortran") }}
     - perl
     - cmake                      # [win]
     - curl                       # [win]
