@@ -51,8 +51,8 @@ outputs:
       - lib/libopenblas*.so*          # [linux]
     requirements:
       build:
-        - {{ compiler("c") }}           #[ppc_arch != "p10"]
-        - {{ compiler("fortran") }}     #[ppc_arch != "p10"]
+        - {{ compiler("c") }}
+        - {{ compiler("fortran") }}
         - llvm-openmp
         - libgcc-ng {{ libgcc }}        #[cudatoolkit == "11.2"]
         - libstdcxx-ng {{ libstdcxx }}  #[cudatoolkit == "11.2"]
@@ -61,6 +61,9 @@ outputs:
         - libgcc-ng {{ libgcc }}        #[cudatoolkit == "11.2"]
         - libstdcxx-ng {{ libstdcxx }}  #[cudatoolkit == "11.2"]
         - libgfortran-ng {{ libgfortran }}   #[cudatoolkit == "11.2"]
+      run:
+        - libgfortran-ng {{ libgfortran }}   #[cudatoolkit == "11.2"]
+        - libgfortran-ng         #[c_compiler_version == "11.2.*"]
 
     test:
       requires:
