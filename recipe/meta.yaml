@@ -16,7 +16,7 @@ source:
     #- gh2111.patch
 
 build:
-  number: 3
+  number: 4
   missing_dso_whitelist:
     # Mildly concerned this triggers an overlinking warning, but it may be a
     # sign some S390X-specific changes needed in conda-build.  Leaving this in
@@ -34,6 +34,13 @@ requirements:
     - make                       # [linux]
     - patch                      # [linux]
     - llvm-openmp
+    - libgcc-ng {{ libgcc }}
+    - libstdcxx-ng {{ libstdcxx }}
+    - libgfortran-ng {{ libgfortran }}
+  host:
+    - libgcc-ng {{ libgcc }}
+    - libstdcxx-ng {{ libstdcxx }}
+    - libgfortran-ng {{ libgfortran }}
 
 outputs:
   - name: libopenblas
@@ -47,6 +54,13 @@ outputs:
         - {{ compiler("c") }}           #[ppc_arch != "p10"]
         - {{ compiler("fortran") }}     #[ppc_arch != "p10"]
         - llvm-openmp
+        - libgcc-ng {{ libgcc }}
+        - libstdcxx-ng {{ libstdcxx }}
+        - libgfortran-ng {{ libgfortran }}
+      host:
+        - libgcc-ng {{ libgcc }}
+        - libstdcxx-ng {{ libstdcxx }}
+        - libgfortran-ng {{ libgfortran }}
 
     test:
       requires:
@@ -100,6 +114,15 @@ outputs:
       - {{ pin_subpackage("libopenblas") }}
       - blas * openblas
     requirements:
+      build:
+        - libgcc-ng {{ libgcc }}
+        - libstdcxx-ng {{ libstdcxx }}
+        - libgfortran-ng {{ libgfortran }}
+      host:
+        - libgcc-ng {{ libgcc }}
+        - libstdcxx-ng {{ libstdcxx }}
+        - libgfortran-ng {{ libgfortran }}
+
       run:
         - {{ pin_subpackage("libopenblas", exact=True) }}
         - {{ pin_subpackage("nomkl", exact=True) }}
