@@ -19,9 +19,7 @@ set -ex
 
 export USE_OPENMP=1
 
-if [[ $ppc_arch != "p10" ]]; then
-    export LDFLAGS="${LDFLAGS} -L$PREFIX/lib -L$BUILD_PREFIX/lib"
-fi
+export LDFLAGS="${LDFLAGS} -L$PREFIX/lib -L$BUILD_PREFIX/lib"
 
 if [[ ${target_platform} != linux-aarch64 ]]; then
     # Stuart's recommendation to stop lapack-test from failing
@@ -86,6 +84,7 @@ case "${target_platform}" in
         ;;
     linux-ppc64le)
         build_opts+=(TARGET="POWER8")
+        BUILD_BFLOAT16=1
         ;;
     linux-s390x)
         build_opts+=(TARGET="Z14")
