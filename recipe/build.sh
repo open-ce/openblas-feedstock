@@ -19,7 +19,9 @@ set -ex
 
 export USE_OPENMP=1
 
-export LDFLAGS="${LDFLAGS} -L$PREFIX/lib -L$BUILD_PREFIX/lib"
+if [[ $ppc_arch != "p10" ]]; then
+    export LDFLAGS="${LDFLAGS} -L$PREFIX/lib -L$BUILD_PREFIX/lib"
+fi
 
 if [[ ${target_platform} != linux-aarch64 ]]; then
     # Stuart's recommendation to stop lapack-test from failing
