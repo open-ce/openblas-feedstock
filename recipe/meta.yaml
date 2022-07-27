@@ -16,7 +16,7 @@ source:
     #- gh2111.patch
 
 build:
-  number: 1
+  number: 2
   missing_dso_whitelist:
     # Mildly concerned this triggers an overlinking warning, but it may be a
     # sign some S390X-specific changes needed in conda-build.  Leaving this in
@@ -25,8 +25,8 @@ build:
 
 requirements:
   build:
-    - {{ compiler("c") }}
-    - {{ compiler("fortran") }}
+    - {{ compiler("c") }}      #[ppc_arch != 'p10']
+    - {{ compiler("fortran") }}          #[ppc_arch != 'p10']
     - perl
     - cmake                      # [win]
     - curl                       # [win]
@@ -51,8 +51,8 @@ outputs:
       - lib/libopenblas*.so*          # [linux]
     requirements:
       build:
-        - {{ compiler("c") }}
-        - {{ compiler("fortran") }}
+        - {{ compiler("c") }}           #[ppc_arch != 'p10']
+        - {{ compiler("fortran") }}     #[ppc_arch != 'p10']
         - llvm-openmp
         - libgcc-ng {{ libgcc }}        #[cudatoolkit == "11.2"]
         - libstdcxx-ng {{ libstdcxx }}  #[cudatoolkit == "11.2"]
