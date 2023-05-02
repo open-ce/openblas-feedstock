@@ -171,7 +171,7 @@ make ${build_opts[@]} \
 # be separately built and run.
 #OPENBLAS_NUM_THREADS=${CPU_COUNT} CFLAGS="${CF}" FFLAGS="${FFLAGS}" make test
 OPENBLAS_NUM_THREADS=${CPU_COUNT} CFLAGS="${CF}" FFLAGS="${FFLAGS}" \
-    make lapack-test ${build_opts[@]}
+    make -j16 lapack-test ${build_opts[@]}
 
 CFLAGS="${CF}" FFLAGS="${FFLAGS}" \
     make install PREFIX="${PREFIX}" ${build_opts[@]}
