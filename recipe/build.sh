@@ -18,6 +18,21 @@
 set -ex
 
 export USE_OPENMP=1
+ARCH=$(uname -m)
+NO_OF_MAKE_THREADS=128
+if [[ $ARCH == "ppc64le" ]]; then
+    if [ -z ${LIMIT_BUILD_RESOURCES+x} ];
+    then
+        echo "ERROR: LIMIT_BUILD_RESOURCES is unset. Please set it to 1 if the build system is low in resources, else set it to 0"
+        exit 1
+    else
+        echo "LIMIT_BUILD_RESOURCES is set to $LIMIT_BUILD_RESOURCES"
+        if [[ ${LIMIT_BUILD_RESOURCES} == true || ${LIMIT_BUILD_RESOURCES} == 1 ]];
+        then
+            NO_OF_MAKE_THREADS=8
+        fi
+    fi
+fi
 
 if [[ $ppc_arch != "p10" ]]; then
     export LDFLAGS="${LDFLAGS} -L$PREFIX/lib -L$BUILD_PREFIX/lib"
@@ -112,7 +127,7 @@ build_opts+=(NO_LAPACK=0)
 # Enable threading. This can be controlled to a certain number by
 # setting OPENBLAS_NUM_THREADS before loading the library.
 build_opts+=(USE_THREAD=1)
-build_opts+=(NUM_THREADS=8)
+build_opts+=(NUM_THREADS=$NO_OF_MAKE_THREADS)
 
 # Disable CPU/memory affinity handling to avoid problems with NumPy and R
 build_opts+=(NO_AFFINITY=1)
@@ -163,15 +178,15 @@ fi
 #    https://github.com/scikit-learn/scikit-learn/issues/636
 #USE_SIMPLE_THREADED_LEVEL3=1
 
-make -j8 ${build_opts[@]} \
+make ${build_opts[@]} \
      HOST=${HOST} CROSS_SUFFIX="${HOST}-" \
      CFLAGS="${CF}" FFLAGS="${FFLAGS}"
 
 # BLAS tests are now run as part of build process; LAPACK tests still need to
 # be separately built and run.
 #OPENBLAS_NUM_THREADS=${CPU_COUNT} CFLAGS="${CF}" FFLAGS="${FFLAGS}" make test
-OPENBLAS_NUM_THREADS=8 CFLAGS="${CF}" FFLAGS="${FFLAGS}" \
-    make -j8 lapack-test ${build_opts[@]}
+OPENBLAS_NUM_THREADS=${NO_OF_MAKE_THREADS} CFLAGS="${CF}" FFLAGS="${FFLAGS}" \
+    make lapack-test ${build_opts[@]}
 
 CFLAGS="${CF}" FFLAGS="${FFLAGS}" \
     make install PREFIX="${PREFIX}" ${build_opts[@]}
