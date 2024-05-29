@@ -1,4 +1,4 @@
-{% set version = "0.3.26" %}
+{% set version = "0.3.27" %}
 
 package:
   name: openblas_multipkg
@@ -7,7 +7,7 @@ package:
 source:
   fn: openblas-{{ version }}.tar.gz
   url: https://github.com/xianyi/OpenBLAS/archive/v{{ version }}.tar.gz
-  sha256: 4e6e4f5cb14c209262e33e6816d70221a2fe49eb69eaf0a06f065598ac602c68
+  sha256: aa2d68b1564fe2b13bc292672608e9cdeeeb6dc34995512e65c3b10f4599e897
     # new in 0.3 series
     # requires glibc >=2.21; disable for the foreseeable future.
     #   https://github.com/xianyi/OpenBLAS/blob/dbfd7524cd94fe15930ed2f78b7789f15b22fec0/Makefile.rule#L112-L116
